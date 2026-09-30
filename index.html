@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Password Strength Indicator - built with HTML, CSS and vanilla JavaScript." />
+  <title>Password Strength Indicator</title>
+
+  <!-- Link to the stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Decorative background glows -->
+  <div class="background" aria-hidden="true">
+    <span class="glow glow--one"></span>
+    <span class="glow glow--two"></span>
+  </div>
+
+  <main class="page">
+
+    <!-- ===================== CARD ===================== -->
+    <section class="card">
+
+      <!-- ---------- Header ---------- -->
+      <header class="card__header">
+        <div class="shield" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l7 3v5c0 4.4-2.9 8.3-7 9.5C7.9 19.3 5 15.4 5 11V6l7-3z" />
+            <rect x="9.5" y="10.5" width="5" height="4.5" rx="1" />
+            <path d="M10.5 10.5V9.5a1.5 1.5 0 013 0v1" />
+          </svg>
+        </div>
+        <h1>Create Your Password</h1>
+        <p class="subtitle">Enter a password to check its strength.</p>
+      </header>
+<!-- ---------- Form ---------- -->
+      <form id="passwordForm" class="form" novalidate>
+
+        <!-- Password field -->
+        <div class="field">
+          <label class="field__label" for="password">Password</label>
+
+          <div class="input-wrap">
+            <!-- Lock icon inside the field -->
+            <span class="input-wrap__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4.5" y="10" width="15" height="10" rx="2.5" />
+                <path d="M8 10V7.5a4 4 0 018 0V10" />
+              </svg>
+            </span>
+
+            <input type="password" id="password" name="password" class="input-wrap__field"
+                   placeholder="Enter your password" autocomplete="new-password"
+                   spellcheck="false" required />
+
+            <!-- Show / hide password button -->
+            <button type="button" id="togglePassword" class="toggle-btn"
+                    aria-label="Show password" aria-pressed="false" title="Show password">
+              <!-- Eye: shown while the password is visible -->
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
+                <circle cx="12" cy="12" r="3.2" />
+              </svg>
+              <!-- Eye with slash: shown while the password is hidden -->
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l16 16" />
+                <path d="M9.9 5.9A9.7 9.7 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-3.3 4.1" />
+                <path d="M6.4 7.9A16.8 16.8 0 002.5 12S6 18.5 12 18.5c1 0 1.9-.2 2.7-.5" />
+                <path d="M10.2 10.3a2.6 2.6 0 003.5 3.6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+<!-- ---------- Strength indicator ---------- -->
+        <section class="strength" id="strengthSection" data-level="0" aria-label="Password strength">
+          <div class="strength__head">
+            <span class="strength__title">Strength</span>
+            <span class="strength__value" id="strengthText" aria-live="polite">Enter a password</span>
+          </div>
+
+          <!-- Strength bar split into 5 visual segments -->
+          <!-- The color comes from the data-level attribute on the parent section -->
+          <div class="bar" id="strengthBar" role="progressbar"
+               aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"
+               aria-valuetext="Enter a password" aria-labelledby="strengthText">
+            <span class="bar__segment"></span>
+            <span class="bar__segment"></span>
+            <span class="bar__segment"></span>
+            <span class="bar__segment"></span>
+            <span class="bar__segment"></span>
+          </div>
+
+          <div class="strength__scale">
+            <span>Weak</span>
+            <span>Strong</span>
+          </div>
+        </section>
+<!-- ---------- Requirements list ---------- -->
+        <ul class="requirements" id="requirements">
+          <li class="requirement" data-key="length">
+            <span class="requirement__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span class="requirement__text">At least 8 characters</span>
+          </li>
+
+          <li class="requirement" data-key="uppercase">
+            <span class="requirement__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span class="requirement__text">One uppercase letter</span>
+          </li>
+
+          <li class="requirement" data-key="lowercase">
+            <span class="requirement__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span class="requirement__text">One lowercase letter</span>
+          </li>
+
+          <li class="requirement" data-key="number">
+            <span class="requirement__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span class="requirement__text">One number</span>
+          </li>
+
+          <li class="requirement" data-key="special">
+            <span class="requirement__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                   stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span class="requirement__text">One special character</span>
+          </li>
+        </ul>
+<!-- ---------- Submit ---------- -->
+        <button type="submit" class="btn-submit">
+          <span>Create Password</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h13" />
+            <path d="M12.5 6l6 6-6 6" />
+          </svg>
+        </button>
+
+        <!-- Status message - appears after the form is submitted -->
+        <p class="message" id="message" role="status" aria-live="polite"></p>
+
+      </form>
+    </section>
+
+    <footer class="page__footer">
+      Built with HTML, CSS &amp; vanilla JavaScript &mdash; no frameworks, no backend.
+    </footer>
+  </main>
+
+  <!-- Link to the JavaScript file (at the end so the DOM is already ready) -->
+  <script src="script.js"></script>
+</body>
+</html>

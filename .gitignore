@@ -1,0 +1,12 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+
+# Node (not used by this project, just in case)
+node_modules/

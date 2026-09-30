@@ -1,0 +1,536 @@
+/* =====================================================================
+   Password Strength Indicator - stylesheet
+   Sections:
+   1. Design tokens      6. Strength bar (5 segments + colors)
+   2. Reset & base       7. Requirements list
+   3. Background glows   8. Submit button & message
+   4. Card & header      9. Responsive design
+   5. Form field & input
+   ===================================================================== */
+
+/* ---------- 1. Design tokens ---------------------------------------- */
+:root {
+  --font: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Brand colors */
+  --brand-1: #6366f1;
+  --brand-2: #8b5cf6;
+  --brand-3: #22d3ee;
+
+  /* Surfaces */
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.18);
+  --field-bg: rgba(255, 255, 255, 0.1);
+
+  /* Text */
+  --text: #f8fafc;
+  --text-muted: #cbd5e1;
+
+  /* Strength colors */
+  --color-1: #ef4444; /* red         - Very Weak  */
+  --color-2: #f97316; /* orange      - Weak       */
+  --color-3: #eab308; /* yellow      - Medium     */
+  --color-4: #84cc16; /* light green - Strong     */
+  --color-5: #22c55e; /* green       - Very Strong */
+  --color-ok: #22c55e;
+
+  /* Current strength color - changed through the .bar[data-level] rules */
+  --strength-color: #94a3b8;
+
+  /* Layout */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+}
+
+/* ---------- 2. Reset & base ----------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--text);
+  background: linear-gradient(135deg, #0f172a 0%, #312e81 45%, #4c1d95 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  -webkit-font-smoothing: antialiased;
+}
+/* ---------- 3. Background glows ------------------------------------ */
+.background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.glow--one {
+  width: 420px;
+  height: 420px;
+  background: var(--brand-2);
+  top: -120px;
+  left: -100px;
+  animation: float 12s ease-in-out infinite;
+}
+
+.glow--two {
+  width: 380px;
+  height: 380px;
+  background: var(--brand-3);
+  bottom: -140px;
+  right: -80px;
+  animation: float 15s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(40px, 30px) scale(1.12); }
+}
+
+/* Page wrapper keeps the content centered on every screen size */
+.page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ---------- 4. Card & header --------------------------------------- */
+.card {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 34px 30px 30px;
+  animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.card__header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+/* Round shield / lock icon above the title */
+.shield {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  box-shadow: 0 10px 26px rgba(99, 102, 241, 0.45);
+}
+
+.shield svg { width: 32px; height: 32px; }
+
+.card__header h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+/* ---------- 5. Form field & input ---------------------------------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap__icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  color: var(--text-muted);
+  pointer-events: none; /* the icon never blocks typing */
+}
+
+.input-wrap__icon svg { width: 20px; height: 20px; }
+
+.input-wrap__field {
+  width: 100%;
+  padding: 14px 50px 14px 44px; /* right space for the eye button */
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--field-bg);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.input-wrap__field::placeholder { color: rgba(203, 213, 225, 0.65); }
+
+.input-wrap__field:focus {
+  border-color: var(--brand-1);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.22);
+}
+/* Show / hide password button (the eye icon) */
+.toggle-btn {
+  position: absolute;
+  right: 8px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.toggle-btn svg { width: 22px; height: 22px; }
+
+.toggle-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.toggle-btn:active { transform: scale(0.92); }
+
+/* Only one eye icon is visible at a time.
+   JS adds the class "is-visible" to the button. */
+.icon-eye-off,
+.toggle-btn.is-visible .icon-eye {
+  display: none;
+}
+
+.toggle-btn.is-visible .icon-eye-off {
+  display: block;
+}
+
+/* ---------- 6. Strength bar ----------------------------------------- */
+.strength__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.strength__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* The strength text uses the same color as the bar */
+.strength__value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--strength-color);
+  transition: color 0.35s ease;
+}
+
+/* The bar: 5 equal segments separated by small gaps */
+.bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  height: 10px;
+}
+
+.bar__segment {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  transform: scaleY(0.75);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+/* Filled segments - JS adds "is-filled" to the first N segments */
+.bar__segment.is-filled {
+  background: var(--strength-color);
+  box-shadow: 0 0 12px var(--strength-color);
+  transform: scaleY(1);
+}
+
+/* Small label under the bar */
+.strength__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba(203, 213, 225, 0.6);
+}
+/* --- Level colors -----------------------------------------------------
+   JS only sets data-level="0".."5" on the .strength section.
+   Each level overrides --strength-color, so both the strength text and
+   the bar segments (children of the section) inherit it and animate.  */
+.strength[data-level="0"] { --strength-color: #94a3b8; } /* empty       - grey         */
+.strength[data-level="1"] { --strength-color: var(--color-1); } /* 1 rule  - red         */
+.strength[data-level="2"] { --strength-color: var(--color-2); } /* 2 rules - orange      */
+.strength[data-level="3"] { --strength-color: var(--color-3); } /* 3 rules - yellow      */
+.strength[data-level="4"] { --strength-color: var(--color-4); } /* 4 rules - light green */
+.strength[data-level="5"] { --strength-color: var(--color-5); } /* 5 rules - green       */
+
+/* ---------- 7. Requirements list ----------------------------------- */
+.requirements {
+  list-style: none;
+  margin: 0;
+  padding: 16px 18px;
+  display: grid;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* The small checkbox square */
+.requirement__box {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 6px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.requirement__box svg {
+  width: 13px;
+  height: 13px;
+  /* Animates the tick being drawn when the requirement is satisfied */
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.35s ease;
+}
+
+/* Satisfied state - JS adds the class "is-ok" */
+.requirement.is-ok {
+  color: var(--color-ok);
+  transform: translateX(3px);
+}
+
+.requirement.is-ok .requirement__box {
+  color: #062e16;
+  background: var(--color-ok);
+  border-color: var(--color-ok);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+}
+
+.requirement.is-ok .requirement__box svg {
+  stroke-dashoffset: 0;
+}
+/* ---------- 8. Submit button & message ----------------------------- */
+.btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(99, 102, 241, 0.38);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.btn-submit svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s ease;
+}
+
+.btn-submit:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 16px 34px rgba(99, 102, 241, 0.5);
+}
+
+.btn-submit:hover svg { transform: translateX(4px); }
+
+.btn-submit:active {
+  transform: translateY(2px) scale(0.99);
+}
+
+.btn-submit:focus-visible,
+.toggle-btn:focus-visible {
+  outline: 2px solid var(--brand-3);
+  outline-offset: 3px;
+}
+
+/* Status message - hidden until the form is submitted */
+.message {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 20px;
+  padding: 11px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.message.show {
+  opacity: 1;
+  transform: none;
+}
+
+.message--success {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.16);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+}
+
+.message--error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+/* Footer text under the card */
+.page__footer {
+  font-size: 0.78rem;
+  text-align: center;
+  color: rgba(203, 213, 225, 0.65);
+}
+/* ---------- 9. Responsive design ----------------------------------- */
+
+/* Small laptops / large tablets */
+@media (max-width: 520px) {
+  .card {
+    padding: 28px 22px 24px;
+  }
+
+  .card__header h1 {
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 380px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .card {
+    padding: 24px 18px 22px;
+  }
+
+  .card__header h1 {
+    font-size: 1.25rem;
+  }
+
+  .input-wrap__field {
+    padding: 13px 46px 13px 40px;
+    font-size: 0.95rem;
+  }
+
+  .requirements {
+    padding: 14px;
+  }
+
+  .requirement {
+    font-size: 0.85rem;
+  }
+}
+
+/* Touch devices: avoid hover effects that stay stuck after tapping */
+@media (hover: none) {
+  .toggle-btn:hover {
+    background: transparent;
+  }
+}
+
+/* Respect the user's "reduce motion" system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
